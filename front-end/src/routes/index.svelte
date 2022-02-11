@@ -1,5 +1,7 @@
 <script>
     import { onMount } from 'svelte';
+    import { ethers } from 'ethers';
+    import abi from '../utils/WavePortal.json'
 
     var currentAccount;
 
@@ -30,7 +32,7 @@
         } catch (error) {
             console.log(error);
         }
-  }
+    }
     
     async function connectWallet() {
         try {
@@ -47,6 +49,38 @@
             currentAccount = accounts[0];
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    async function wave() {
+        try {
+            const { ethereum } = window;
+            let contractAddress = "0x06852D209C524c37EB7D328ED3d1571c773d9F99";
+            let contractABI = abi.abi;
+
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+                /** Writing data to Blockchain **/
+                const waveTxn = await wavePortalContract.wave();
+                console.log("Mining...", waveTxn.hash);
+
+                await waveTxn.wait();
+                console.log("Mined -- ", waveTxn.hash);
+
+                /** Reading data from Blockchain **/
+                const count = await wavePortalContract.getTotalWaves();                
+                console.log("Retrieved total wave count - ", count.toNumber());
+
+                const userCount = await wavePortalContract.getTotalUsersWaved();
+                console.log("Total Users Waved - ", userCount.toNumber());
+            } else {
+                console.log("Ethereum object doesn't exist!");
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 </script>
@@ -68,7 +102,7 @@
         </div>   
       {:else}
         <div class="dataContainer">
-            <button class="waveButton">Wave at Me</button>
+            <button class="waveButton" on:click="{wave}">Wave at Me</button>
         </div>   
       {/if}         
       <div class="bio">Deployed on Rinkeby at 0x06852D209C524c37EB7D328ED3d1571c773d9F99</div>
