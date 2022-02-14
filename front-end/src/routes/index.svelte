@@ -3,7 +3,10 @@
     import { ethers } from 'ethers';
     import abi from '../utils/WavePortal.json'
 
-    var currentAccount;
+    let currentAccount;
+    let contractAddress = "0xAa2e8f7099b4e11955Cd5D9425DcE4522e322927";
+    let allWaves;
+    let message = '';
 
     onMount(async () => {
 		await checkIfWalletIsConnected();
@@ -52,10 +55,9 @@
         }
     }
 
-    async function wave() {
+    async function wave() {        
         try {
-            const { ethereum } = window;
-            let contractAddress = "0x06852D209C524c37EB7D328ED3d1571c773d9F99";
+            const { ethereum } = window;            
             let contractABI = abi.abi;
 
             if (ethereum) {
@@ -64,7 +66,7 @@
                 const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
 
                 /** Writing data to Blockchain **/
-                const waveTxn = await wavePortalContract.wave();
+                const waveTxn = await wavePortalContract.wave(message);
                 console.log("Mining...", waveTxn.hash);
 
                 await waveTxn.wait();
@@ -74,14 +76,16 @@
                 const count = await wavePortalContract.getTotalWaves();                
                 console.log("Retrieved total wave count - ", count.toNumber());
 
-                const userCount = await wavePortalContract.getTotalUsersWaved();
-                console.log("Total Users Waved - ", userCount.toNumber());
+                allWaves = await wavePortalContract.getAllWaves();
+                console.log("All Waves -");
+                console.log(allWaves);
             } else {
                 console.log("Ethereum object doesn't exist!");
             }
         } catch (error) {
             console.log(error);
         }
+        message = '';
     }
 </script>
 
@@ -102,58 +106,66 @@
         </div>   
       {:else}
         <div class="dataContainer">
-            <button class="waveButton" on:click="{wave}">Wave at Me</button>
+            <input type="text" placeholder=" your message here..." bind:value={message} />
+            <button class="waveButton" disabled='{message === ''}' on:click="{wave}">Wave at Me</button>
         </div>   
       {/if}         
-      <div class="bio">Deployed on Rinkeby at 0x06852D209C524c37EB7D328ED3d1571c773d9F99</div>
+      {#each allWaves || [] as wave }
+        <div class="waveMessage">
+            <div>From: {wave.waver}</div>
+            <div>At: {wave.timestamp.toString()}</div>
+            <div>Message:{wave.message}</div>
+        </div>
+      {/each}
+      <div class="bio">Deployed on Rinkeby at {contractAddress}</div>      
     </div>
 </div>
 
 <style>    
     .mainContainer {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 64px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 64px;
     }
 
     .dataContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 600px;
-    margin-top: 32px;
-    margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-width: 600px;
+        margin-top: 32px;
+        margin-bottom: 10px;
 
     }
 
     .header {
-    text-align: center;
-    font-size: 32px;
-    font-weight: 600;
+        text-align: center;
+        font-size: 32px;
+        font-weight: 600;
     }
 
     .bio {
-    text-align: center;
-    color: gray;
-    margin-top: 16px;
+        text-align: center;
+        color: gray;
+        margin-top: 16px;
     }
 
     .waveMessage {
-    margin-top: 16px;
-    padding: 8px;
-    border: 0;
-    border-radius: 5px;
-    
+        background-Color: "Lavender";
+        margin-top: 16px;
+        padding: 8px;
+        border: 0;
+        border-radius: 5px;    
     }
 
     .waveButton {
-    cursor: pointer;
-    margin-top: 16px;
-    padding: 16px;
-    border: 0;
-    border-radius: 10px;
-    font-size: 15px;
-    color: purple;
+        cursor: pointer;
+        margin-top: 16px;
+        padding: 16px;
+        border: 0;
+        border-radius: 10px;
+        font-size: 15px;
+        color: purple;
     }
 </style>
