@@ -136,7 +136,6 @@
         max-width: 600px;
         margin-top: 32px;
         margin-bottom: 10px;
-
     }
 
     .header {
@@ -152,7 +151,7 @@
     }
 
     .waveMessage {
-        background-Color: "Lavender";
+        background-Color: Lavender;
         margin-top: 16px;
         padding: 8px;
         border: 0;
