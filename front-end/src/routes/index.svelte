@@ -4,7 +4,7 @@
     import abi from '../utils/WavePortal.json'
 
     let currentAccount;
-    let contractAddress = "0x804964236C59C09C3bC12974F0500581807C530b";
+    let contractAddress = "0xb970a61020e2Dee499Fc1E189696740ee6A73de6";
     let allWaves;
     let message = '';
 
