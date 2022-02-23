@@ -8,7 +8,7 @@ contract WavePortal {
     event NewWave(address indexed from, string message, uint256 timestamp);
 
     struct Wave {
-        address waver; // The address of the user who waved.
+        address from; // The address of the user who waved.
         string message; // The message the user sent.
         uint256 timestamp; // The timestamp when the user waved.
     }
@@ -30,8 +30,8 @@ contract WavePortal {
     function wave(string memory _message) public {
 
         require(
-            lastWavedAt[msg.sender] + 15 minutes < block.timestamp,
-            "Wait 15m"
+            lastWavedAt[msg.sender] + 15 seconds < block.timestamp,
+            "Wait 15s"
         );
 
         lastWavedAt[msg.sender] = block.timestamp;
@@ -41,6 +41,21 @@ contract WavePortal {
 
         waves.push(Wave(msg.sender, _message, block.timestamp));
 
+        luckDraw();
+
+        emit NewWave(msg.sender, _message, block.timestamp);
+    }
+
+    function getAllWaves() public view returns(Wave[] memory) {
+        return waves;
+    }
+
+    function getTotalWaves() public view returns(uint256) {
+        console.log("We have %d total waves!", totalWaves);
+        return totalWaves;
+    }
+
+    function luckDraw() private {
         /*
          * Generate a new seed for the next user that sends a wave
          */
@@ -56,22 +71,17 @@ contract WavePortal {
 
             uint256 prizeAmount = 0.0001 ether;
 
-            require(prizeAmount <= address(this).balance, "Trying to withdraw more money than the contract has.");
+            if (prizeAmount <= address(this).balance) {
+                (bool success, ) = (msg.sender).call{value: prizeAmount}("");
 
-            (bool success, ) = (msg.sender).call{value: prizeAmount}("");
-
-            require(success, "Failed to withdraw money from contract.");
+                if (success) {
+                    console.log("%d send to %s", prizeAmount, msg.sender);
+                } else {
+                    console.log("Unable to send Prize Amount");
+                }
+            } else {
+                console.log("Insufficient Contract Balance");
+            }
         }
-
-        emit NewWave(msg.sender, _message, block.timestamp);
-    }
-
-    function getAllWaves() public view returns(Wave[] memory) {
-        return waves;
-    }
-
-    function getTotalWaves() public view returns(uint256) {
-        console.log("We have %d total waves!", totalWaves);
-        return totalWaves;
     }
 }
