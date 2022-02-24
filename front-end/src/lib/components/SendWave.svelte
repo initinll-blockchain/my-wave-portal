@@ -20,7 +20,7 @@
     </div>
 {:else}
     <div class="dataContainer">
-        <input type="text" placeholder=" your message here..." bind:value={message} />
+        <input class="waveMessage" type="text" placeholder=" your message here..." bind:value={message} />
         <button class="waveButton" disabled='{typeof message === 'undefined' || message === ''}' on:click="{wave}">Wave at Me</button>
     </div>
 {/if}
