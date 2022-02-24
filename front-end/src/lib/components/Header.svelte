@@ -7,17 +7,3 @@
 <div class="bio">
     Connect your Ethereum wallet and wave at me!
 </div>
-
-<style>
-    .header {
-        text-align: center;
-        font-size: 32px;
-        font-weight: 600;
-    }
-
-    .bio {
-        text-align: center;
-        color: gray;
-        margin-top: 16px;
-    }
-</style>

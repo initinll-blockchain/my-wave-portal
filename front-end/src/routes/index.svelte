@@ -1,4 +1,5 @@
 <script>
+    import '../app.css';
     import { onMount } from 'svelte';
     import { checkIfWalletIsConnected, readWaves, addNewWaveEventListner } from '$lib/helper/wavePortalHelper';
 
@@ -42,21 +43,3 @@
       <Footer />
     </div>
 </div>
-
-<style>
-    .mainContainer {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-top: 64px;
-    }
-
-    .dataContainer {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        max-width: 600px;
-        margin-top: 32px;
-        margin-bottom: 10px;
-    }
-</style>

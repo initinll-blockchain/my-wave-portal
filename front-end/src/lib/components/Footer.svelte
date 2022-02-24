@@ -4,11 +4,3 @@
 </script>
 
 <div class="bio">Deployed on Rinkeby at {contractAddress}</div>
-
-<style>
-    .bio {
-        text-align: center;
-        color: gray;
-        margin-top: 16px;
-    }
-</style>
