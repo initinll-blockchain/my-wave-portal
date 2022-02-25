@@ -1,15 +1,17 @@
-<script>
+<script lang="ts">
     import '../app.css';
     import { onMount } from 'svelte';
-    import { checkIfWalletIsConnected, readWaves, addNewWaveEventListner } from '$lib/helper/wavePortalHelper';
+    import { checkIfWalletIsConnected, readWaves, addNewWaveEventListner } from '$lib/services/wavePortalService';
+    import type { Wave } from '$lib/types/wave';
 
     import Header from '$lib/components/Header.svelte';
     import Footer from '$lib/components/Footer.svelte';
     import SendWave from '$lib/components/SendWave.svelte';
     import WaveList from '$lib/components/WaveList.svelte';
 
-    let currentAccount;
-    let allWaves = [];
+
+    let currentAccount: string;
+    let allWaves: Wave[] = [];
     
     onMount(async () => {
 		currentAccount = await checkIfWalletIsConnected();
@@ -20,9 +22,9 @@
         addNewWaveEventListner(onNewWave);
 	});
 
-    function onNewWave(from, message, timestamp) {
+    function onNewWave(from: string, message: string, timestamp: string) {
         try {            
-            let wave = {
+            const wave: Wave = {
                 from,
                 message,
                 timestamp

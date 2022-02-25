@@ -1,12 +1,17 @@
-import { ethers } from 'ethers';
+import { Contract, ethers, Signer, type ContractInterface, type ContractTransaction } from 'ethers';
 import abi from '$lib/abi/WavePortal.json';
-import { CONTRACT_ADDRESS_LOCALHOST } from '$lib/helper/constants';
+import { Constants } from '$lib/helpers/constants';
+import type { Wave } from '$lib/types/wave';
+
+declare const window: any;
 
 export function getContractAddress() {    
-    return CONTRACT_ADDRESS_LOCALHOST;
+    return Constants.CONTRACT_ADDRESS_LOCALHOST;
 }
 
-export async function checkIfWalletIsConnected() {
+export async function checkIfWalletIsConnected(): Promise<string> {
+    let account:string;
+
     try {
         const { ethereum } = window;
 
@@ -17,10 +22,10 @@ export async function checkIfWalletIsConnected() {
             console.log("We have the ethereum object", ethereum);
         }
 
-        const accounts = await ethereum.request({ method: "eth_accounts" });
+        const accounts: string[] = await ethereum.request({ method: "eth_accounts" });
 
         if (accounts.length !== 0) {
-            const account = accounts[0];
+            account = accounts[0];
             console.log("Found an authorized account:", account);
             return account;            
         } else {
@@ -31,7 +36,9 @@ export async function checkIfWalletIsConnected() {
     }
 }
 
-export async function connectWallet() {
+export async function connectWallet(): Promise<string> {
+    let account:string;
+
     try {
         const { ethereum } = window;
 
@@ -40,10 +47,10 @@ export async function connectWallet() {
             return;
         }
 
-        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        const accounts: string[] = await ethereum.request({ method: "eth_requestAccounts" });
 
         if (accounts.length !== 0) {
-            const account = accounts[0];
+            account = accounts[0];
             console.log("Found an authorized account:", account);
             return account;            
         } else {
@@ -54,16 +61,16 @@ export async function connectWallet() {
     }
 }
 
-function getContract() {
+function getContract(): Contract {
     try {
         const { ethereum } = window;                
-        let contractABI = abi.abi;
-        let wavePortalContract;
+        let contractABI: ContractInterface = abi.abi;
+        let wavePortalContract: Contract;
 
         if (ethereum) {
-            const provider = new ethers.providers.Web3Provider(ethereum);
-            const signer = provider.getSigner();
-            let contractAddress = getContractAddress();
+            const provider: ethers.providers.Web3Provider = new ethers.providers.Web3Provider(ethereum);
+            const signer: Signer = provider.getSigner();
+            let contractAddress: string = getContractAddress();
             wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
             console.log("wavePortalContract", wavePortalContract.address);
         }
@@ -73,13 +80,13 @@ function getContract() {
     }
 }
 
-export async function writeWave(message) {
+export async function writeWave(message: string): Promise<void> {
     try {
         let wavePortalContract = getContract();
         
         if (wavePortalContract) {
             /** Writing data to Blockchain **/
-            const waveTxn = await wavePortalContract.wave(message, { gasLimit: 300000 });
+            const waveTxn: ContractTransaction = await wavePortalContract.wave(message, { gasLimit: 300000 });
             console.log("Mining...", waveTxn.hash);
 
             await waveTxn.wait();
@@ -90,19 +97,19 @@ export async function writeWave(message) {
     }
 }
 
-export async function readWaves() {
+export async function readWaves(): Promise<Wave[]> {
     try {
         let wavePortalContract = getContract();
 
         if (wavePortalContract) {
             /** Reading data from Blockchain **/
-            const count = await wavePortalContract.getTotalWaves();
+            const count:number = await wavePortalContract.getTotalWaves();
 
             if (count) {
-                console.log("Retrieved total wave count - ", count.toNumber());
+                console.log("Retrieved total wave count - ", count);
             }
 
-            let allWaves = await wavePortalContract.getAllWaves();
+            let allWaves: Wave[] = await wavePortalContract.getAllWaves();
 
             if (allWaves) {
                 console.log("All Waves -");

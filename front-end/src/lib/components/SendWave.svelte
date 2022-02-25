@@ -1,16 +1,17 @@
-<script>    
-    import { connectWallet, writeWave } from '$lib/helper/wavePortalHelper';
+<script lang="ts">    
+    import { connectWallet, writeWave } from '$lib/services/wavePortalService';
     
-    export let currentAccount;
-    let message; 
+    export let currentAccount: string;
+    let message: string; 
 
-    async function connect() {
+    async function connect(): Promise<void> {
         currentAccount = await connectWallet();
     }
 
-    async function wave() {
+    async function wave(): Promise<void> {
         console.log("message", message);
-        message = await writeWave(message);
+        await writeWave(message);
+        message = '';
     }
 </script>
 
