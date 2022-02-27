@@ -3,6 +3,7 @@
     import { onMount } from 'svelte';
     import { checkIfWalletIsConnected, readWaves, addNewWaveEventListner } from '$lib/services/wavePortalService';
     import type { Wave } from '$lib/types/wave';
+    import { sort } from 'fast-sort';
 
     import Header from '$lib/components/Header.svelte';
     import Footer from '$lib/components/Footer.svelte';
@@ -10,14 +11,16 @@
     import WaveList from '$lib/components/WaveList.svelte';
 
     let currentAccount: string;
-    let allWaves: Wave[] = [];
+    let allWaves: Wave[];
+    let sortedWaves: Wave[];
     
     onMount(async () => {
         try {
             currentAccount = await checkIfWalletIsConnected();
 
             if (currentAccount != null) {
-                allWaves = await (await readWaves());                
+                allWaves = await (await readWaves());  
+                sortedWaves = sort(allWaves).desc(w => parseInt(w.timestamp));
             }         
             addNewWaveEventListner(onNewWave);   
         } catch (error) {
@@ -37,6 +40,7 @@
 
             if (!ifWaveExists) {
                 allWaves = [...allWaves, wave];
+                sortedWaves = sort(allWaves).desc(w => parseInt(w.timestamp));
                 alert('New Message Recevied !');
             }
         } catch (error) {
@@ -54,8 +58,8 @@
 <div class="mainContainer">
     <div class="dataContainer">      
       <Header />
-      <SendWave {currentAccount} />      
-      <WaveList {allWaves} />
+      <SendWave account={currentAccount} />      
+      <WaveList waves={sortedWaves} />
       <Footer />
     </div>
 </div>

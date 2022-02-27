@@ -1,12 +1,12 @@
 <script lang="ts">    
     import { connectWallet, writeWave } from '$lib/services/wavePortalService';
     
-    export let currentAccount: string;
+    export let account: string;
     let message: string; 
 
     async function connect(): Promise<void> {
         try {
-            currentAccount = await connectWallet();
+            account = await connectWallet();
         } catch (error) {
             console.log("Connect Error", error);
             if (error.message !== undefined) {
@@ -35,7 +35,7 @@
     }
 </script>
 
-{#if currentAccount == null}
+{#if account == null}
     <div class="dataContainer">
         <button class="waveButton" on:click={connect}>Connect Wallet</button>
     </div>
