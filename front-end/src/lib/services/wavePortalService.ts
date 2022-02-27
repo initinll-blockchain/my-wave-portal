@@ -32,7 +32,7 @@ export async function checkIfWalletIsConnected(): Promise<string> {
             console.log("No authorized account found")
         }
     } catch (error) {
-        console.log("checkIfWalletIsConnected", error);
+        throw error;
     }
 }
 
@@ -57,7 +57,7 @@ export async function connectWallet(): Promise<string> {
             console.log("No authorized account found")
         }     
     } catch (error) {
-        console.log("connectWallet", error)
+        throw error;
     }
 }
 
@@ -93,7 +93,7 @@ export async function writeWave(message: string): Promise<void> {
             console.log("Mined -- ", waveTxn.hash);
         }
     } catch (error) {
-        console.log("writeWave", error);
+        throw error;
     }
 }
 
@@ -118,7 +118,7 @@ export async function readWaves(): Promise<Wave[]> {
             }
         }
     } catch (error) {
-        console.log("readWaves", error);
+        throw error;
     }
 }
 

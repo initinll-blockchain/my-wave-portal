@@ -9,18 +9,21 @@
     import SendWave from '$lib/components/SendWave.svelte';
     import WaveList from '$lib/components/WaveList.svelte';
 
-
     let currentAccount: string;
     let allWaves: Wave[] = [];
     
     onMount(async () => {
-		currentAccount = await checkIfWalletIsConnected();
+        try {
+            currentAccount = await checkIfWalletIsConnected();
 
-        if (currentAccount != null) {
-            allWaves = await readWaves();
+            if (currentAccount != null) {
+                allWaves = await (await readWaves());                
+            }         
+            addNewWaveEventListner(onNewWave);   
+        } catch (error) {
+            console.log("OnMount Error", error);
         }
-        addNewWaveEventListner(onNewWave);
-	});
+	});    
 
     function onNewWave(from: string, message: string, timestamp: string) {
         try {            
@@ -29,10 +32,21 @@
                 message,
                 timestamp
             }
-            console.log("new wave", wave);
-            allWaves = [...allWaves, wave];
+
+            let ifWaveExists: boolean = allWaves.some(w => parseInt(w.timestamp) === parseInt(wave.timestamp));            
+
+            if (!ifWaveExists) {
+                allWaves = [...allWaves, wave];
+                alert('New Message Recevied !');
+            }
         } catch (error) {
             console.log("onNewWave", error);
+            if (error.message !== undefined) {
+                alert("Error - " + error.message);    
+            }
+            else {
+                alert("Error - " + error);    
+            }            
         }
     }
 </script>

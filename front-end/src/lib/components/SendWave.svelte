@@ -5,13 +5,33 @@
     let message: string; 
 
     async function connect(): Promise<void> {
-        currentAccount = await connectWallet();
+        try {
+            currentAccount = await connectWallet();
+        } catch (error) {
+            console.log("Connect Error", error);
+            if (error.message !== undefined) {
+                alert("Error - " + error.message);    
+            }
+            else {
+                alert("Error - " + error);    
+            }  
+        }
     }
 
     async function wave(): Promise<void> {
-        console.log("message", message);
-        await writeWave(message);
-        message = '';
+        try {
+            console.log("message", message);
+            await writeWave(message);
+            message = '';
+        } catch (error) {
+            console.log("Wave Error", error);
+            if (error.message !== undefined) {
+                alert("Error - " + error.message);    
+            }
+            else {
+                alert("Error - " + error);    
+            }  
+        }
     }
 </script>
 
