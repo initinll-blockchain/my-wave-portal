@@ -1,21 +1,41 @@
 <script lang="ts">    
     import { connectWallet, writeWave } from '$lib/services/wavePortalService';
     
-    export let currentAccount: string;
+    export let account: string;
     let message: string; 
 
     async function connect(): Promise<void> {
-        currentAccount = await connectWallet();
+        try {
+            account = await connectWallet();
+        } catch (error) {
+            console.log("Connect Error", error);
+            if (error.message !== undefined) {
+                alert("Error - " + error.message);    
+            }
+            else {
+                alert("Error - " + error);    
+            }  
+        }
     }
 
     async function wave(): Promise<void> {
-        console.log("message", message);
-        await writeWave(message);
-        message = '';
+        try {
+            console.log("message", message);
+            await writeWave(message);
+            message = '';
+        } catch (error) {
+            console.log("Wave Error", error);
+            if (error.message !== undefined) {
+                alert("Error - " + error.message);    
+            }
+            else {
+                alert("Error - " + error);    
+            }  
+        }
     }
 </script>
 
-{#if currentAccount == null}
+{#if account == null}
     <div class="dataContainer">
         <button class="waveButton" on:click={connect}>Connect Wallet</button>
     </div>
