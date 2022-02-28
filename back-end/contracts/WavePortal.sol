@@ -13,8 +13,8 @@ contract WavePortal {
         uint256 timestamp; // The timestamp when the user waved.
     }
 
-    uint256 private seed;
-    mapping(address => uint256) private lastWavedAt;
+    uint256 private seed;    
+    mapping(address => bool) private exWinner;
 
     Wave[] waves;
     uint public totalWaves;
@@ -28,14 +28,6 @@ contract WavePortal {
     }
 
     function wave(string memory _message) public {
-
-        require(
-            lastWavedAt[msg.sender] + 15 seconds < block.timestamp,
-            "Wait 15s"
-        );
-
-        lastWavedAt[msg.sender] = block.timestamp;
-
         totalWaves += 1;
         console.log("%s waved w/ message %s", msg.sender, _message);
 
@@ -56,32 +48,36 @@ contract WavePortal {
     }
 
     function luckDraw() private {
-        /*
-         * Generate a new seed for the next user that sends a wave
-         */
-        seed = (block.difficulty + block.timestamp + seed) % 100;
 
-        console.log("Random # generated: %d", seed);
+        if (!exWinner[msg.sender] && address(this).balance != 0 ether) {
+            /*
+            * Generate a new seed for the next user that sends a wave
+            */
+            seed = (block.difficulty + block.timestamp + seed) % 100;
 
-        /*
-         * Give a 50% chance that the user wins the prize.
-         */
-        if (seed <= 50) {
-            console.log("%s won!", msg.sender);
+            console.log("Random # generated: %d", seed);
 
-            uint256 prizeAmount = 0.0001 ether;
+            /*
+            * Give a 33% chance that the user wins the prize.
+            */
+            if (seed <= 33) {
+                console.log("%s won!", msg.sender);
 
-            if (prizeAmount <= address(this).balance) {
-                (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+                uint256 prizeAmount = 0.0001 ether;
 
-                if (success) {
-                    console.log("%d send to %s", prizeAmount, msg.sender);
+                if (prizeAmount <= address(this).balance) {
+                    (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+
+                    if (success) {
+                        exWinner[msg.sender] = true;
+                        console.log("%d send to %s", prizeAmount, msg.sender);
+                    } else {
+                        console.log("Unable to send Prize Amount");
+                    }
                 } else {
-                    console.log("Unable to send Prize Amount");
+                    console.log("Insufficient Contract Balance");
                 }
-            } else {
-                console.log("Insufficient Contract Balance");
             }
-        }
+        }   
     }
 }

@@ -142,6 +142,6 @@ export function removeNewWaveEventListner(onNewWave) {
             wavePortalContract.off("NewWave", onNewWave);
         }
     } catch (error) {
-        console.log("addNewWaveEventListner", error);
+        console.log("removeNewWaveEventListner", error);
     }
 }
