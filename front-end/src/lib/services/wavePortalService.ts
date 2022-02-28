@@ -1,7 +1,7 @@
 import { Contract, ethers, Signer, type ContractInterface, type ContractTransaction } from 'ethers';
 import abi from '$lib/abi/WavePortal.json';
-import { Constants } from '$lib/helpers/constants';
-import type { Wave } from '$lib/types/wave';
+import { Constants } from '$lib/helpers/Constants';
+import type { Wave } from '$lib/types/Wave';
 
 declare const window: any;
 

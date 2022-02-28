@@ -1,14 +1,22 @@
 <script lang="ts">    
-    import { connectWallet, writeWave } from '$lib/services/wavePortalService';
+    import { onMount } from 'svelte';
+
+    import type { Wave } from '$lib/types/Wave';
+    import { WaveStore } from '$lib/stores/WaveStore';    
+    import { connectWallet, writeWave, addNewWaveEventListner } from '$lib/services/WavePortalService';
     
     export let account: string;
     let message: string; 
+
+    onMount(() => {
+        addNewWaveEventListner(onNewWave);
+    });
 
     async function connect(): Promise<void> {
         try {
             account = await connectWallet();
         } catch (error) {
-            console.log("Connect Error", error);
+            console.log("SendWave Connect Error", error);
             if (error.message !== undefined) {
                 alert("Error - " + error.message);    
             }
@@ -19,18 +27,44 @@
     }
 
     async function wave(): Promise<void> {
-        try {
-            console.log("message", message);
+        try {            
             await writeWave(message);
             message = '';
         } catch (error) {
-            console.log("Wave Error", error);
+            console.log("SendWave Wave Error", error);
             if (error.message !== undefined) {
                 alert("Error - " + error.message);    
             }
             else {
                 alert("Error - " + error);    
             }  
+        }
+    }
+
+    function onNewWave(from: string, message: string, timestamp: string) {
+        try {            
+            const wave: Wave = {
+                from,
+                message,
+                timestamp
+            }
+
+            WaveStore.update((waves:Wave[]) => {
+                if (waves !== undefined && waves.length > 0) {
+                    let ifWaveExists: boolean = waves.some(w => parseInt(w.timestamp) === parseInt(wave.timestamp));            
+                    if (!ifWaveExists) {
+                        return [wave, ...waves];
+                    }
+                }
+            });            
+        } catch (error) {
+            console.log("SendWave OnNewWave Error", error);
+            if (error.message !== undefined) {
+                alert("Error - " + error.message);    
+            }
+            else {
+                alert("Error - " + error);    
+            }            
         }
     }
 </script>

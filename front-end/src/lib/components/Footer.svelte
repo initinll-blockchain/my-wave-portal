@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getContractAddress } from '$lib/services/wavePortalService';
+    import { getContractAddress } from '$lib/services/WavePortalService';
     let contractAddress: string = getContractAddress();
 </script>
 

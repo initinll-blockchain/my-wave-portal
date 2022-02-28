@@ -1,14 +1,27 @@
 <script lang="ts">    
+    import { onDestroy } from "svelte";
     import { scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
-    import type { Wave } from '$lib/types/wave';
+    
+    import type { Wave } from "$lib/types/Wave";
+    import { WaveStore } from "$lib/stores/WaveStore";
+    import { sort } from 'fast-sort';
 
-    export let waves: Wave[];
+    let sortedWaves: Wave[] = [];
+
+    const unsub = WaveStore.subscribe((waves) => {        
+        sortedWaves = sort(waves).desc(w => parseInt(w.timestamp));
+    });
+
+    onDestroy(() => {
+        unsub();
+    });
+
 </script>
 
-{#if waves !== undefined && waves.length > 0}
+{#if sortedWaves !== undefined && sortedWaves.length > 0}
     <h1 class="messageHeader">Messages</h1>
-    {#each waves || [] as wave (wave.timestamp) }
+    {#each sortedWaves || [] as wave (wave.timestamp) }
         <div class="message" 
             transition:scale|local={{ start: 0.7 }}
             animate:flip={{ duration: 200 }}>
