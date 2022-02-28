@@ -53,12 +53,14 @@
                 timestamp
             }
 
-            WaveStore.update((waves:Wave[]) => {
-                if (waves !== undefined && waves.length > 0) {
+            WaveStore.update((waves:Wave[]) => {                
+                if (waves !== undefined && waves.length > 0) {                     
                     let ifWaveExists: boolean = waves.some(w => parseInt(w.timestamp) === parseInt(wave.timestamp));            
                     if (!ifWaveExists) {
                         return [wave, ...waves];
                     }
+                } else {                    
+                    return [wave, ...waves];
                 }
             });            
         } catch (error) {
