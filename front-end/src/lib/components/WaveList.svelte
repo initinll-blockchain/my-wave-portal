@@ -18,3 +18,28 @@
         </div>
     {/each}
 {/if}
+
+<style>
+    .messageHeader {
+        font-size: 1.5rem;
+        text-align: center;
+        font-weight: 400;
+        color: var(--heading-color);
+        line-height: 1;
+    }
+
+    .message {
+        display: grid;
+        grid-template-rows: auto;
+        grid-gap: 0.5rem;
+        align-items: center;
+        margin: 0 0 0.5rem 0;
+        padding: 0.5rem;
+        background-color: white;
+        border-radius: 10px;
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.1));
+        transform: translate(-1px, -1px);
+        transition: filter 0.2s, transform 0.2s;
+        font-size: 12px;
+    }
+</style>
