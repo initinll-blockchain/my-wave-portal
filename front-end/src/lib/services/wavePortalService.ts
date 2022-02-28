@@ -133,3 +133,15 @@ export function addNewWaveEventListner(onNewWave) {
         console.log("addNewWaveEventListner", error);
     }
 }
+
+export function removeNewWaveEventListner(onNewWave) {
+    try {        
+        let wavePortalContract = getContract();
+
+        if (wavePortalContract) {
+            wavePortalContract.off("NewWave", onNewWave);
+        }
+    } catch (error) {
+        console.log("addNewWaveEventListner", error);
+    }
+}

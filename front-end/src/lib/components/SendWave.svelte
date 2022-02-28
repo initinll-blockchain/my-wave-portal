@@ -1,15 +1,19 @@
 <script lang="ts">    
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
 
     import type { Wave } from '$lib/types/Wave';
     import { WaveStore } from '$lib/stores/WaveStore';    
-    import { connectWallet, writeWave, addNewWaveEventListner } from '$lib/services/WavePortalService';
+    import { connectWallet, writeWave, addNewWaveEventListner, removeNewWaveEventListner } from '$lib/services/WavePortalService';
     
     export let account: string;
     let message: string; 
 
     onMount(() => {
         addNewWaveEventListner(onNewWave);
+    });
+
+    onDestroy(()=> {
+        removeNewWaveEventListner(onNewWave);
     });
 
     async function connect(): Promise<void> {
