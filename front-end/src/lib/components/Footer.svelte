@@ -3,4 +3,6 @@
     let contractAddress: string = getContractAddress();
 </script>
 
-<div class="bio">Deployed on Rinkeby at {contractAddress}</div>
+<footer>
+    <div class="bio">Deployed on Rinkeby at {contractAddress}</div>
+</footer>

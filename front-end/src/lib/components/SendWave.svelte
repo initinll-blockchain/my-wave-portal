@@ -1,15 +1,28 @@
 <script lang="ts">    
-    import { onDestroy, onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 
     import type { Wave } from '$lib/types/Wave';
     import { WaveStore } from '$lib/stores/WaveStore';    
-    import { connectWallet, writeWave, addNewWaveEventListner, removeNewWaveEventListner } from '$lib/services/WavePortalService';
+    import { connectWallet, checkIfWalletIsConnected, readWaves, writeWave, addNewWaveEventListner, removeNewWaveEventListner } from '$lib/services/WavePortalService';
     
-    export let account: string;
+    let account: string;
     let message: string; 
 
-    onMount(() => {
-        addNewWaveEventListner(onNewWave);
+    onMount(async () => {
+        try {
+            addNewWaveEventListner(onNewWave);
+            account = await checkIfWalletIsConnected();
+
+            if (account != null) {
+                let waves = await readWaves();
+
+                WaveStore.update(() => {
+                    return waves;
+                });                
+            }              
+        } catch (error) {
+            console.log("SendWave OnMount Error", error);
+        }        
     });
 
     onDestroy(()=> {
