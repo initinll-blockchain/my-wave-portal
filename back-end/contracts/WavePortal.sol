@@ -28,6 +28,8 @@ contract WavePortal {
     }
 
     function wave(string memory _message) public {
+        require(bytes(_message).length != 0, "Message required");
+        
         totalWaves += 1;
         console.log("%s waved w/ message %s", msg.sender, _message);
 
