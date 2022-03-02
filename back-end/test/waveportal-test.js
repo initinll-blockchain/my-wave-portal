@@ -56,6 +56,17 @@ describe("WavePortal", async function () {
         expect(allWaves[0].message).to.equal("Hello");
     });
 
+    it("Should have message", async function(){
+        const [owner] = await hre.ethers.getSigners();
+        const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
+        const waveContract = await waveContractFactory.deploy({
+            value: hre.ethers.utils.parseEther("0.1"),
+        });
+        await waveContract.deployed();
+
+        await expect(waveContract.wave("")).to.be.revertedWith("Message required");
+    });
+
     it("Should emit event", async function(){
         const [owner] = await hre.ethers.getSigners();
         const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
@@ -66,5 +77,4 @@ describe("WavePortal", async function () {
         
         await expect(waveContract.wave("Hello")).to.emit(waveContract, "NewWave");
     });
-
 });
