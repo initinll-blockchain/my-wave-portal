@@ -19,19 +19,25 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-module.exports = {
-  solidity: "0.8.11",
-  localhost: {
-    url: process.env.LOCALHOST_HARDHAT_URL,
-    accounts: [process.env.LOCALHOST_HARDHAT_PRIVATE_KEY]
-  },
-  rinkeby: {
-    url: process.env.STAGING_ALCHEMY_URL,
-    accounts: [process.env.PRIVATE_KEY]
-  },
-  mainnet: {
-    chainId: 1,
-    url: process.env.PROD_ALCHEMY_URL,
-    accounts: [process.env.PRIVATE_KEY],
-  },
+ module.exports = {
+    defaultNetwork: "hardhat",
+    networks: {
+        hardhat: {},        
+        localhost: {
+            url: process.env.LOCALHOST_HARDHAT_URL,
+            accounts: [process.env.LOCALHOST_HARDHAT_PRIVATE_KEY],
+        },
+        rinkeby: {
+            url: process.env.STAGING_ALCHEMY_URL,
+            accounts: [process.env.PRIVATE_KEY],
+        },
+        mainnet: {
+            chainId: 1,
+            url: process.env.PROD_ALCHEMY_URL,
+            accounts: [process.env.PRIVATE_KEY],
+        }
+    },
+    solidity: {
+        version: "0.8.11"
+    }
 };
