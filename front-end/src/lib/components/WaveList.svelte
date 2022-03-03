@@ -5,9 +5,8 @@
     
     import type { Wave } from "$lib/types/Wave";
     import { WaveStore } from "$lib/stores/WaveStore";
+    import { sort } from 'fast-sort';
     
-    import pkg from 'fast-sort';
-    const { sort } = pkg;
 
     let sortedWaves: Wave[] = [];
 
