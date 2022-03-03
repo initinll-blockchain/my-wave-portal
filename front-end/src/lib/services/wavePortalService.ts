@@ -6,7 +6,7 @@ import type { Wave } from '$lib/types/Wave';
 declare const window: any;
 
 export function getContractAddress() {    
-    return Constants.CONTRACT_ADDRESS_LOCALHOST;
+    return Constants.CONTRACT_ADDRESS_RINKEBY;
 }
 
 export async function checkIfWalletIsConnected(): Promise<string> {
