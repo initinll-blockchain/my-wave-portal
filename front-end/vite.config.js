@@ -8,6 +8,6 @@ const pkg = JSON.parse(readFileSync(join(cwd(), 'package.json')));
 /** @type {import('vite').UserConfig} */
 export default {
 	ssr: {
-		noExternal: Object.keys(pkg.dependencies || {})
+		noExternal: ['fast-sort']
 	}
 };
